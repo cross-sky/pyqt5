@@ -1,0 +1,6 @@
+{
+    "python.terminal.executeInFileDir": true
+    "python.analysis.extraPaths": [ "./c01/UI",　　　　　　　　// 自定义模块的相对路径，可多个，可绝对路径
+        　                      "./c01/FUNCTION",
+                                "./c01/"]
+}
