@@ -1,7 +1,7 @@
 '''
 Author: your name
 Date: 2022-04-23 17:14:10
-LastEditTime: 2022-04-23 17:14:11
+LastEditTime: 2022-04-23 23:07:46
 LastEditors: Please set LastEditors
 Description: In User Settings Edit
 FilePath: \pyqt5\vrf\vrf_define.py
@@ -15,6 +15,7 @@ BIT5 = 1 << 5
 BIT6 = 1 << 6
 BIT7 = 1 << 7
 
+# ------ dict key number, do not repeat
 DATA_SA = 0
 DATA_DA = 1
 DATA_CC = 2
@@ -41,7 +42,9 @@ CMD_FORMATE = 35
 ERROR_SYSTEM_NUM = 36
 ERROR_INDOOR_NUM = 37
 ERROR_CODE = 38
+MYPRINT_FUNCTION = 39
 
+# end ----------
 
 DATA_STATIC_DICT={
     RCCONTROL_ADDR : 'RCCONTROL_ADDR',
@@ -163,4 +166,11 @@ ERRCODE_DIC = {
     ERROR_SYSTEM_NUM : 'ErrorSystemNum',
     ERROR_INDOOR_NUM : 'ErrorIndoorNum',
     ERROR_CODE : 'ErrorCode'
+}
+
+
+PRINT_FUNCTION_DIC={
+    CMD_CC_CMD_FORMAT_CONFIG : 'myprint_cmd0x{}_request',
+    CMD_CC_CMD_FORMAT_REQUEST : 'myprint_cmd0x{}_request',
+    CMD_CC_CMD_FORMAT_RESPONSE : 'myprint_cmd0x{}_response',
 }

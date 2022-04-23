@@ -1,7 +1,7 @@
 '''
 Author: your name
 Date: 2022-04-09 10:03:42
-LastEditTime: 2022-04-23 17:15:56
+LastEditTime: 2022-04-24 00:04:30
 LastEditors: Please set LastEditors
 Description: In User Settings Edit
 FilePath: \video\rd505_cmd.py
@@ -59,20 +59,24 @@ def checkFcc(str_data):
 
 class RD505CMD():
     def __init__(self, data) -> None:
-        # self.data_org = data
         self.data = checkFcc(data) #string_to_listbytes(data)
         self.state_dict = {}
     
     # CHECK FCC ERROR
     def cmd_check(self):
         if (self.data != ''):
-            self.decodeCmd4cRCcontrol()
-            self.decodeCmd49ResMain()
-            self.decodeCmd0DResMain()
-            self.decodeCmd0DRCcontrol()
+            self.decode_cmd4c_response_from_main()
+            self.decode_cmd49_response_from_main()
+            self.decode_cmd0d_response_from_main()
+            self.decode_cmd0d_request_to_main()
+
+    def myprint_function(self,cmd,  cmd_format):
+        fun_print = PRINT_FUNCTION_DIC.get(cmd_format).format(hex(cmd)[2:].zfill(2))
+        return fun_print
 
     def cmd_decode_addr(self,  hex_data:list):
         dat_dict = {}
+        
         dat_dict[RCCONTROL_ADDR] = hex_data[DATA_SA] + ((hex_data[DATA_EA] & 0xf0) << 8)
         dat_dict[MAIN_ADDR] = hex_data[DATA_DA] + ((hex_data[DATA_EA] & 0x0F) << 8)
         dat_dict[DATA_LEN] = len(hex_data) - 5
@@ -85,8 +89,12 @@ class RD505CMD():
     def check_cmd_cc(self, hex_data, cmd,  cmd_format):
             ex_flag = (hex_data[DATA_CC]&BIT1) >> 1
 
-            if ((not ex_flag) and (hex_data[DATA_CMD]!= cmd)):
+            if (hex_data[DATA_CMD]!= cmd):
                 logging.debug('data is not cmd: {} '.format(hex(cmd)))
+                return False
+
+            if ((not ex_flag) and (hex_data[DATA_CMD]!= cmd)):
+                logging.debug('exflag and data is not cmd: {} '.format(hex(cmd)))
                 return False
                 
             if ((hex_data[DATA_CC] & CMD_CC_MASK_CMD_FORMAT) != cmd_format):  # response
@@ -95,49 +103,54 @@ class RD505CMD():
             return True
 
     # decode cmd 4c rc request
-    def decodeCmd4cRCcontrol(self):
+    def decode_cmd4c_response_from_main(self):
         hex_data = self.data
+        decode_dict = {}
+        cmd_cc = 0x4c
 
-        self.data_decode_dict = {}
         # check
-        if (not self.check_cmd_cc(hex_data, 0x4c, CMD_CC_CMD_FORMAT_CONFIG)):
+        if (not self.check_cmd_cc(hex_data, cmd_cc, CMD_CC_CMD_FORMAT_CONFIG)):
             return
         logging.debug('decode cmd 4c response')
-        self.data_decode_dict.update(self.cmd_decode_addr(hex_data))
+        decode_dict.update(self.cmd_decode_addr(hex_data))
 
-        self.data_decode_dict[SYSTEM_MODE] = hex_data[6] & 0x07
+        decode_dict[SYSTEM_MODE] = hex_data[6] & 0x07
         
         # check 4c type  temp or windspeed or up_wind_dir or lr_wind_dir
-        self.data_decode_dict[CMD_TYPE] = hex_data[6] & 0xf8
+        decode_dict[CMD_TYPE] = hex_data[6] & 0xf8
 
-        self.data_decode_dict[WIND_SPEED] = hex_data[7] & (BIT6 + 0x07)
+        decode_dict[WIND_SPEED] = hex_data[7] & (BIT6 + 0x07)
 
-        self.data_decode_dict[WIN_DIR_UP] = hex_data[7] & 0x38
+        decode_dict[WIN_DIR_UP] = hex_data[7] & 0x38
 
-        self.data_decode_dict[SYS_TEMPT] = (hex_data[8] - 70 ) / 2
+        decode_dict[SYS_TEMPT] = (hex_data[8] - 70 ) / 2
 
-        self.data_decode_dict[WIN_DIR_LR] = hex_data[9] & 0x3f
+        decode_dict[WIN_DIR_LR] = hex_data[9] & 0x3f
+
+        decode_dict[MYPRINT_FUNCTION] = self.myprint_function(cmd_cc, CMD_CC_CMD_FORMAT_REQUEST)
+        self.data_decode_dict = decode_dict
 
 
-    def decodeCmd0DRCcontrol(self):
-        self.data_decode_cmd0d = {}
+    def decode_cmd0d_request_to_main(self):
+        decode_dict = {}
         hex_data = self.data
 
         if (not self.check_cmd_cc(hex_data, 0x0d, CMD_CC_CMD_FORMAT_REQUEST)):
             return
 
         logging.debug('decode cmd0D Rc recontrol request')
-        self.data_decode0d_rc_dict = {}
-        self.data_decode0d_rc_dict.update(self.cmd_decode_addr(hex_data))
+        decode_dict.update(self.cmd_decode_addr(hex_data))
+        decode_dict[MYPRINT_FUNCTION] = self.myprint_function(0x0d, CMD_CC_CMD_FORMAT_REQUEST)
+        self.data_decode_dict = decode_dict
 
 
     def decodeCmd81ResMain(self):
         logging.debug('decode cmd 81')
 
 
-    def decodeCmd49ResMain(self):
-        self.data_decode_rescmd49 = {}
+    def decode_cmd49_response_from_main(self):
         hex_data = self.data
+        decode_dict = {}
 
         if (not self.check_cmd_cc(hex_data, 0x49, CMD_CC_CMD_FORMAT_RESPONSE)):
             return
@@ -148,28 +161,27 @@ class RD505CMD():
             return
 
         logging.debug('decode cmd 49 main response')
-        self.data_decode_rescmd49.update(self.cmd_decode_addr(hex_data))
-        self.data_decode_rescmd49[ERROR_SYSTEM_NUM] = ((hex_data[DATA_AU0]<<2) + ((hex_data[DATA_AU1]&0xc0)>>6)) - 0x20
-        self.data_decode_rescmd49[ERROR_INDOOR_NUM] = hex_data[DATA_AU1]&0x3F
-        self.data_decode_rescmd49[ERROR_CODE] = hex_data[DATA_AN] 
-        logging.debug(self.data_decode_rescmd49[DATA_LEN])
-
+        decode_dict.update(self.cmd_decode_addr(hex_data))
+        decode_dict[ERROR_SYSTEM_NUM] = ((hex_data[DATA_AU0]<<2) + ((hex_data[DATA_AU1]&0xc0)>>6)) - 0x20
+        decode_dict[ERROR_INDOOR_NUM] = hex_data[DATA_AU1]&0x3F
+        decode_dict[ERROR_CODE] = hex_data[DATA_AN] 
+        decode_dict[MYPRINT_FUNCTION] = self.myprint_function(0x49, CMD_CC_CMD_FORMAT_RESPONSE)
+        self.data_decode_dict = decode_dict
 
     def decodeCmd81ResMain(self):
         self.data_decode_rescmd81 = {}
         hex_data = self.data
         
         ex_flag = (hex_data[DATA_CC]&BIT1) >> 1
-        # (hex_data[DATA_CC]&BIT1)  == BIT1
         if ((not ex_flag) and (hex_data[DATA_CMD]!= 0x81)):
             logging.debug('data is not cmd81 res')
             return
 
     
 
-    def decodeCmd0DResMain(self):
-        self.data_decode_rescmd0d = {}
+    def decode_cmd0d_response_from_main(self):
         hex_data = self.data
+        decode_dict = {}
         
         if (not self.check_cmd_cc(hex_data, 0x0d, CMD_CC_CMD_FORMAT_RESPONSE)):
             return
@@ -180,8 +192,11 @@ class RD505CMD():
             if (hex_data[DATA_BC] != 0x12):
                 logging.debug('data bc is not 0x12')
                 return False
-            self.data_decode_rescmd0d.update(self.cmd_decode_addr(hex_data))
-            self.data_decode_rescmd0d[SYSTEM_NUMBBER] = (hex_data[DATA_CMD+1]<<2)+(hex_data[DATA_CMD+2]>>6) - 0x20
-            self.data_decode_rescmd0d[INDOOR_NUMBER] = (hex_data[DATA_CMD+2]&0x3F)
+            decode_dict.update(self.cmd_decode_addr(hex_data))
+            decode_dict[MYPRINT_FUNCTION] = self.myprint_function(0x0d, CMD_CC_CMD_FORMAT_RESPONSE)
+            decode_dict[SYSTEM_NUMBBER] = (hex_data[DATA_CMD+1]<<2)+(hex_data[DATA_CMD+2]>>6) - 0x20
+            decode_dict[INDOOR_NUMBER] = (hex_data[DATA_CMD+2]&0x3F)
+            self.data_decode_dict = decode_dict
+            
 
             
