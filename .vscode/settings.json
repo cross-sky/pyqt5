@@ -1,6 +1,24 @@
 {
-    "python.terminal.executeInFileDir": true
-    "python.analysis.extraPaths": [ "./c01/UI",　　　　　　　　// 自定义模块的相对路径，可多个，可绝对路径
-        　                      "./c01/FUNCTION",
-                                "./c01/"]
+    "python.terminal.executeInFileDir": true,
+    "python.analysis.extraPaths": [
+        "./c01/UI",
+        "./c01/FUNCTION",
+        "./c01/",
+        "C:/Users/apple/anaconda3/Scripts",
+        "C:/Users/apple/anaconda3/Lib/site-packages"
+    ],
+    "python.linting.pylintEnabled": true,
+    "python.languageServer": "Pylance",
+    "python.testing.unittestEnabled": false,
+    "python.testing.nosetestsEnabled": false,
+    "python.testing.pytestEnabled": true,
+    "python.testing.autoTestDiscoverOnSaveEnabled": true,
+    "python.testing.promptToConfigure": false,
+    "python.testing.pytestArgs": [
+        ".",
+        "--capture=no",
+        "-v",
+        "-q",
+        "--disable-warnings"
+    ]
 }

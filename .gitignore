@@ -1,2 +1,4 @@
 *.pyc
 /.pytest_cache
+/vrf_qt/VRF_WIFI_KZQ.zip
+/record

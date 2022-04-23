@@ -1,7 +1,7 @@
 '''
 Author: your name
 Date: 2022-04-16 15:24:36
-LastEditTime: 2022-04-17 12:29:45
+LastEditTime: 2022-04-18 23:13:18
 LastEditors: Please set LastEditors
 Description: In User Settings Edit
 FilePath: \pyqt5\EX1GuessNum\function\func_guess_num.py
@@ -27,7 +27,6 @@ class FunGuessNum(QMainWindow, Ui_MainWindow):
         self.numShow.selectAll()
         self.numShow.setFocus()
         # self.guessButton.clicked.connect(self.close)    
-        # QMessageBox.about(self, 'see', 'yyy')  
 
     def showMessageBox(self):
         guessNumber = int(self.numShow.text())
