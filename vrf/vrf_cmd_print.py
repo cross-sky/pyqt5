@@ -1,7 +1,7 @@
 '''
 Author: your name
 Date: 2022-04-23 10:16:57
-LastEditTime: 2022-04-23 22:17:30
+LastEditTime: 2022-04-30 23:17:08
 LastEditors: Please set LastEditors
 Description: In User Settings Edit
 FilePath: \pyqt5\vrf\vrf_cmd_print.py
@@ -38,6 +38,11 @@ def myprint_cmd0x49_response(dat_dict):
         logging.debug(s)
     return strs
 
+def myprint_cmd0x0d_request(dat_dict):
+    strs = myprint_addr(dat_dict)
+    for s in strs:
+        logging.debug(s)
+    return strs
 
 def myprint_cmd0x0d_response(dat_dict):
     addrs = myprint_addr(dat_dict)
@@ -64,8 +69,65 @@ def myprint_addr(dat_dict):
     return strs
 
 
-def myprint_cmd0x0d_request(dat_dict):
+
+
+def myprint_cmd_comm_request(dat_dict):
     strs = myprint_addr(dat_dict)
+    for s in strs:
+        logging.debug(s)
+    return strs
+
+def myprint_cmd0x06_request(dat_dict):
+    return myprint_cmd_comm_request(dat_dict)
+
+def myprint_cmd0x0a_request(dat_dict):
+    return myprint_cmd_comm_request(dat_dict)
+
+def myprint_cmd0x0a_response(dat_dict):
+    strs = [
+        'COLD UD_WIND GROUP: {}'.format(UD_WIND_DIR_GROUP_DICT.get(dat_dict[UD_WINDIR_GROUP][SYSTEM_MODE_COLD])),
+        'COLD TEMP PERIOD: {}, {}'.format(dat_dict[COLD_TEMP_PERIOD][0], dat_dict[COLD_TEMP_PERIOD][1]),
+        'WARM UD_WIND GROUP: {}'.format(UD_WIND_DIR_GROUP_DICT.get(dat_dict[UD_WINDIR_GROUP][SYSTEM_MODE_WARM])),
+        'WARM TEMP PERIOD: {}, {}'.format(dat_dict[WARM_TEMP_PERIOD][0], dat_dict[WARM_TEMP_PERIOD][1]),
+        'WET UD_WIND GROUP: {}'.format(UD_WIND_DIR_GROUP_DICT.get(dat_dict[UD_WINDIR_GROUP][SYSTEM_MODE_WET])),
+        'WET TEMP PERIOD: {}, {}'.format(dat_dict[WET_TEMP_PERIOD][0], dat_dict[WET_TEMP_PERIOD][1]),
+        'AUTO UD_WIND GROUP: {}'.format(UD_WIND_DIR_GROUP_DICT.get(dat_dict[UD_WINDIR_GROUP][SYSTEM_MODE_AUTO])),
+        'AUTO TEMP PERIOD: {}, {}'.format(dat_dict[AUTO_TEMP_PERIOD][0], dat_dict[AUTO_TEMP_PERIOD][1]),
+        'WIND UD_WIND GROUP: {}'.format(UD_WIND_DIR_GROUP_DICT.get(dat_dict[UD_WINDIR_GROUP][SYSTEM_MODE_WIND])),
+        # 'COLD TEMP PERIOD: {}, {}'.format(dat_dict[COLD_TEMP_PERIOD][0], dat_dict[COLD_TEMP_PERIOD][1]),
+        'ALLOWMODE : {}'.format(hex(dat_dict[ALLOW_MODE])),
+        'SPEED GROUP: {}'.format(WIND_SPEED_GROUP_DICT.get(dat_dict[SPEED_GROUP])),
+        'WIND LR_WIND GROUP: {}'.format(LR_WIND_DIR_GROUP_DICT.get(dat_dict[LR_WINDIR_GROUP])),
+    ]
+    strs += myprint_addr(dat_dict)
+    for s in strs:
+        logging.debug(s)
+    return strs
+
+
+def myprint_cmd_unknow(dat_dict):
+    strs = [
+        'UNKNOW CMD: {}'.format(str(dat_dict['HEX_DATA'])),
+    ]
+    for s in strs:
+        logging.debug(s)
+    return strs
+
+def myprint_cmd0x81_request(dat_dict):
+    addrs = myprint_addr(dat_dict)
+    strs = [
+        'ERROR CODE: {}'.format(hex(dat_dict[ERROR_CODE])),
+    ]
+    strs += addrs
+
+    for s in strs:
+        logging.debug(s)
+    return strs
+
+def myprint_fcc_error(dat_dict):
+    strs = [
+        'error: {}'.format(dat_dict['HEX_DATA']),
+    ]
     for s in strs:
         logging.debug(s)
     return strs

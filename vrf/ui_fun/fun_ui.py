@@ -1,7 +1,7 @@
 '''
 Author: your name
 Date: 2022-04-16 15:24:36
-LastEditTime: 2022-04-23 23:51:28
+LastEditTime: 2022-04-30 12:38:00
 LastEditors: Please set LastEditors
 Description: In User Settings Edit
 FilePath: \pyqt5\EX1GuessNum\function\func_guess_num.py
@@ -49,7 +49,8 @@ class FunVrfUi(QMainWindow, Ui_MainWindow):
                     result += s + '\r\n'
                 result += '----------------------------\r\n'
         except Exception as e:
-            self.outputText.setPlainText(e)
+            # self.outputText.setPlainText('len, fcc ok, may be data is fake cmd or data.' + str(e))
+            result += 'len, fcc ok, may be data is fake cmd or data.' + str(e)
             logging.debug(e)
             
             

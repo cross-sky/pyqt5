@@ -1,7 +1,7 @@
 '''
 Author: your name
 Date: 2022-04-09 10:04:10
-LastEditTime: 2022-04-23 23:36:47
+LastEditTime: 2022-04-30 21:39:20
 LastEditors: Please set LastEditors
 Description: In User Settings Edit
 FilePath: \video\test\test_rd505_cmd.py
@@ -27,7 +27,7 @@ def print_t(datas:list):
         logging.debug('----------------------------')
         
 def test_decode_cmd4c_temp_response_from_main():
-    data1 = '40 00 11 06 08 4C 09 75 6E 09 08 '
+    data1 = '40 00 11 06 08 4C 09 75 6E 09 09'
     datas = [data1] #
     print_t(datas)
 
@@ -75,3 +75,15 @@ def test_fcc_check():
     # data = '00 FE 58 06 80 49 08 00 00 40 21'
     data = '01 FE 10 02 80 8A E7'
     assert(checkFcc(data) != '')
+
+
+def test_decode_cmd06_request_to_main():
+    data1 = '40 F1 15 03 00 06 00 A1'
+    datas = [data1] #, data3, data4, data5
+    print_t(datas)
+
+def test_decode_cmd0a_req_res_to_main():
+    data1 = '40 00 15 02 08 0A 55'
+    data2 = '00 40 18 0E 80 0A 22 2F 0F 82 6A 82 66 82 6A 7C 68 32 1C'
+    datas = [data1, data2] #, data3, data4, data5
+    print_t(datas)
