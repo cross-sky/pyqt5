@@ -1,13 +1,14 @@
 '''
 Author: your name
 Date: 2022-04-09 10:03:42
-LastEditTime: 2022-05-02 23:45:18
+LastEditTime: 2022-05-04 23:33:50
 LastEditors: Please set LastEditors
 Description: In User Settings Edit
 FilePath: \video\rd505_cmd.py
 '''
 
 import logging
+from os import truncate
 from vrf.vrf_define import *
 import sys
 
@@ -98,6 +99,10 @@ class RD505CMD():
             unknow_cmd |= self.decode_cmd06_request_to_main()
             unknow_cmd |= self.decode_cmd0a_request_to_main()
             unknow_cmd |= self.decode_cmd0a_response_from_main()
+            unknow_cmd |= self.decode_cmd81_request_to_main()
+            unknow_cmd |= self.decode_cmd81_response_from_main()
+            unknow_cmd |= self.decode_cmd0f_request_to_main()
+            unknow_cmd |= self.decode_cmd0f_response_from_main()
 
             if (not unknow_cmd):
                 self.my_print_unknow_code()
@@ -153,6 +158,9 @@ class RD505CMD():
                 logging.debug('data is not cmd {}, {}'.format(hex(cmd), CMD_CC_TYPE_BIT3_4_DICT.get(cmd_format)))
                 return False
             return True
+    
+    def get_cmd_cc(self, hex_data):
+        return (hex_data[DATA_CC]&BIT1) >> 1
 
     # decode cmd 4c rc request
     def decode_cmd4c_request_from_main(self):
@@ -195,8 +203,8 @@ class RD505CMD():
             decode_dict[MYPRINT_FUNCTION] = self.myprint_function(cmd, CMD_CC_CMD_FORMAT_REQUEST)
             self.data_decode_dict = decode_dict
             return True
-        elif(not self.check_cmd_cc(hex_data, cmd, CMD_CC_CMD_FORMAT_CONFIG)):
-            pass
+        # elif(not self.check_cmd_cc(hex_data, cmd, CMD_CC_CMD_FORMAT_CONFIG)):
+        #     pass
             
         return False
 
@@ -390,6 +398,7 @@ class RD505CMD():
         decode_dict = {}
         cmd = 0x81
 
+        
         if (not self.check_cmd_cc(hex_data, cmd, CMD_CC_CMD_FORMAT_REQUEST)):
             return False
 
@@ -410,11 +419,12 @@ class RD505CMD():
         decode_dict = {}
         cmd = 0x81
 
-        if (not self.check_cmd_cc(hex_data, cmd, CMD_CC_CMD_FORMAT_RESPONSE )
-        or not self.check_cmd_cc(hex_data, cmd, CMD_CC_CMD_FORMAT_CONFIG )):
+        check_false = False
+        check_false |=  self.check_cmd_cc(hex_data, cmd, CMD_CC_CMD_FORMAT_RESPONSE )
+        check_false |=  self.check_cmd_cc(hex_data, cmd, CMD_CC_CMD_FORMAT_CHANGE )
+        if ( not check_false ):
             return False
 
-        
         logging.debug('decode cmd 81 response')
 
         decode_dict[PRE_HEAT] = (hex_data[CMD81_RES_DATA_D2] & BIT1) >> 1
@@ -427,11 +437,12 @@ class RD505CMD():
 
         win_up = (hex_data[CMD81_RES_DATA_D0] & (BIT2|BIT3|BIT4)) >> 2
         decode_dict[WIN_DIR_UP] = win_up << 3  # self define bit
+
         decode_dict[FRESH_AIR] = (hex_data[CMD81_RES_DATA_D1] & BIT2) >> 2
         decode_dict[MODE_FIT] = (hex_data[CMD81_RES_DATA_D0] & (BIT1|BIT0)) 
         decode_dict[ALLOW_MODE] = hex_data[CMD81_RES_DATA_D1] & BIT3
         decode_dict[TRY_RUN] = (hex_data[CMD81_RES_DATA_D2] & BIT3) >> 3
-        decode_dict[FILTER_RST_SIGN] = (hex_data[CMD81_RES_DATA_D2] & BIT7) >> 3
+        decode_dict[FILTER_RST_SIGN] = (hex_data[CMD81_RES_DATA_D2] & BIT7) >> 7
         decode_dict[CENTRAL_CTR_BAN_FLAG] = hex_data[CMD81_RES_DATA_D3]
         decode_dict[CENTRAL_CTR_ADDR] = hex_data[CMD81_RES_DATA_D6]
         decode_dict[SYS_TEMPT] = int((hex_data[CMD81_RES_DATA_D4] - 70) /2)
@@ -444,11 +455,12 @@ class RD505CMD():
         if(strong_b5_7):
             decode_dict[WIND_SPEED] = strong_b5_7
         else:
-            decode_dict[WIND_SPEED] = (speed << 6) | speed_5_level
+            decode_dict[WIND_SPEED] = (speed_5_level << 6) | speed
+
 
         decode_dict[WARNING_MACHINE] = hex_data[CMD81_RES_DATA_D7]
         decode_dict[SAVE_ENERGY] = hex_data[CMD81_RES_DATA_D8] & BIT0
-        decode_dict[ECONAVI] = hex_data[CMD81_RES_DATA_D8] & BIT5
+        decode_dict[ECONAVI] = hex_data[CMD81_RES_DATA_D8] & BIT5 >> 5
         decode_dict[NANOE_STATUS] = hex_data[CMD81_RES_DATA_D12] & (BIT3|BIT1)
         decode_dict[CLEANING] = (hex_data[CMD81_RES_DATA_D12] & BIT4) >> 4
 
@@ -462,7 +474,97 @@ class RD505CMD():
         return True
     
 
+    #  CMD 0F REQUEST
+    def decode_cmd0f_request_to_main(self):
+        return self.decode_cmdcomm_request_to_main(0x0f)   
+
+         
+    def decode_cmd0f_response_from_main(self):
+        hex_data = self.data
+        decode_dict = {}
+        cmd = 0x0f
+
+        check_false = False
+        check_false |=  self.check_cmd_cc(hex_data, cmd, CMD_CC_CMD_FORMAT_RESPONSE )
+        if ( not check_false ):
+            return False
+
+        logging.debug('decode cmd 0f response')
+        temp_group = [0, 0, 0, 0, 0]
+        temp_group[SYSTEM_MODE_AUTO] = (hex_data[CMD0F_RES_DATA_FET_1 ] - 70) / 2
+        temp_group[SYSTEM_MODE_WARM] = (hex_data[CMD0F_RES_DATA_FET_2 ] - 70) / 2
+        temp_group[SYSTEM_MODE_WET] = (hex_data[CMD0F_RES_DATA_FET_3 ] - 70) / 2
+        temp_group[SYSTEM_MODE_COLD] = (hex_data[CMD0F_RES_DATA_FET_4 ] - 70) / 2
+        decode_dict[SYSTEM_TEMP_GROUP] = temp_group
+
+        temp_speed = hex_data[CMD0F_RES_DATA_FT_1] >> 4
+        strong_temp = hex_data[CMD0F_RES_DATA_FT_EX] & BIT0
+        strong_temp <<= 6  # sself define
+        temp_group[SYSTEM_MODE_WARM] = strong_temp |temp_speed
+
+        temp_speed = hex_data[CMD0F_RES_DATA_FT_1] & 0x0f
+        strong_temp = (hex_data[CMD0F_RES_DATA_FT_EX] & BIT4) >> 4
+        strong_temp <<= 6  # sself define
+        temp_group[SYSTEM_MODE_AUTO] = strong_temp |temp_speed
+
+        temp_speed = hex_data[CMD0F_RES_DATA_FT_2] >> 4
+        strong_temp = (hex_data[CMD0F_RES_DATA_FT_EX] & BIT1) >> 1
+        strong_temp <<= 6  # sself define
+        temp_group[SYSTEM_MODE_COLD] = strong_temp |temp_speed
+
+        temp_speed = hex_data[CMD0F_RES_DATA_FT_2] & 0x0f
+        strong_temp = (hex_data[CMD0F_RES_DATA_FT_EX] & BIT3) >> 3
+        strong_temp <<= 6  # sself define
+        temp_group[SYSTEM_MODE_WET] = strong_temp |temp_speed
+
+        temp_speed = hex_data[CMD0F_RES_DATA_FT_3] & 0x0f
+        strong_temp = (hex_data[CMD0F_RES_DATA_FT_EX] & BIT2) >> 2
+        strong_temp <<= 6  # sself define
+        temp_group[SYSTEM_MODE_WIND] = strong_temp |temp_speed
+        decode_dict[SYSTEM_SPEED_GROUP] = temp_group
+
+        decode_dict.update(self.cmd_decode_addr(hex_data))
+        decode_dict[MYPRINT_FUNCTION] = self.myprint_function(cmd, CMD_CC_CMD_FORMAT_RESPONSE)
+        self.data_decode_dict = decode_dict
+        return True
+
+    # 
+    def decode_cmd0c_request_to_main(self):
+        hex_data = self.data
+        decode_dict = {}
+        cmd = 0x0c
+
+        check_false = False
+        check_false |=  self.check_cmd_cc(hex_data, cmd, CMD_CC_CMD_FORMAT_CONFIG )
+        check_false |=  self.check_cmd_cc(hex_data, cmd, CMD_CC_CMD_FORMAT_REQUEST )
+        if ( not check_false ):
+            return False
+
+        epcode = hex_data[9]
+        if (self.get_cmd_cc(hex_data) == CMD_CC_CMD_FORMAT_CONFIG):
+            logging.debug('decode cmd 0c config')
+            
+            if (epcode == 0x30):
+                decode_dict[TIMER_TYPE] = hex_data[10]
+                decode_dict[TIMER_HOUR] = hex_data[11] >> 1
+                decode_dict[TIMER_REMAIN_HOUR] = hex_data[12] >> 1
+                
+            decode_dict[MYPRINT_FUNCTION] = self.myprint_function(cmd, CMD_CC_CMD_FORMAT_CONFIG)
         
+        else:
+            logging.debug('decode cmd 0c request')
+            decode_dict[MYPRINT_FUNCTION] = self.myprint_function(cmd, CMD_CC_CMD_FORMAT_REQUEST)
+        
+        epcode = hex_data[9]
+        decode_dict[EP_ADDR] = (hex_data[6] << 8) | epcode
+        decode_dict.update(self.cmd_decode_addr(hex_data))
+        self.data_decode_dict = decode_dict
+        return True
+
+
+
+
+
 
 
     

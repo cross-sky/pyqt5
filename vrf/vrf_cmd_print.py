@@ -1,7 +1,7 @@
 '''
 Author: your name
 Date: 2022-04-23 10:16:57
-LastEditTime: 2022-04-30 23:17:08
+LastEditTime: 2022-05-04 22:39:16
 LastEditors: Please set LastEditors
 Description: In User Settings Edit
 FilePath: \pyqt5\vrf\vrf_cmd_print.py
@@ -28,8 +28,8 @@ def myprint_cmd0x4c_request(dat_dict):
 def myprint_cmd0x49_response(dat_dict):
     addrs = myprint_addr(dat_dict)
     strs = [
-        'ERROR_SYSTEM_NUM: {}'.format(hex(dat_dict[ERROR_SYSTEM_NUM])),
-        'ERROR_INDOOR_NUM: {}'.format(hex(dat_dict[ERROR_INDOOR_NUM])),
+        'ERROR_SYSTEM_NUM: {}'.format(dat_dict[ERROR_SYSTEM_NUM] + 1),
+        'ERROR_INDOOR_NUM: {}'.format(dat_dict[ERROR_INDOOR_NUM] + 1),
         'ERROR_CODE: {}'.format(hex(dat_dict[ERROR_CODE]))
     ]
     strs += addrs
@@ -124,6 +124,60 @@ def myprint_cmd0x81_request(dat_dict):
         logging.debug(s)
     return strs
 
+def myprint_cmd0x81_response(dat_dict):
+    strs = [
+        'PRE_HEAT : {}'.format(dat_dict[PRE_HEAT]),
+        'NANOE_AB : {}'.format(dat_dict[NANOE_AB]),
+        'NANOEG_AB : {}'.format(dat_dict[NANOEG_AB]),
+        'SYSTEM_STATUS : {}'.format(dat_dict[SYSTEM_STATUS]),
+        'PRE_INDOOR : {}'.format(dat_dict[PRE_INDOOR]),
+        'SYSTEM_MODE : {}'.format(SYSTEM_MODE_DICT.get(dat_dict[SYSTEM_MODE])),
+        'WIN_DIR_UP : {}'.format(WIN_DIR_UP_DIC.get(dat_dict[WIN_DIR_UP])),
+        'FRESH_AIR : {}'.format(dat_dict[FRESH_AIR]),
+        'MODE_FIT : {}'.format(dat_dict[MODE_FIT]),
+        'TRY_RUN : {}'.format(dat_dict[TRY_RUN]),
+        'ALLOW_MODE : {}'.format(dat_dict[ALLOW_MODE]),
+        'FILTER_RST_SIGN : {}'.format(dat_dict[FILTER_RST_SIGN]),
+        'CENTRAL_CTR_BAN_FLAG : {}'.format(hex(dat_dict[CENTRAL_CTR_BAN_FLAG])),
+        'CENTRAL_CTR_ADDR : {}'.format(hex(dat_dict[CENTRAL_CTR_ADDR])),
+        'SYS_TEMPT : {}'.format(dat_dict[SYS_TEMPT]),
+        'STYLE_A2W_TEMPT : {}'.format(dat_dict[STYLE_A2W_TEMPT]),
+        'WIND_SPEED :{},  {}'.format(hex(dat_dict[WIND_SPEED]),WIND_SPEED_DIC.get(dat_dict[WIND_SPEED])),
+        'WARNING_MACHINE : {}'.format(dat_dict[WARNING_MACHINE]),
+        'SAVE_ENERGY : {}'.format(dat_dict[SAVE_ENERGY]),
+        'ECONAVI : {}'.format(dat_dict[ECONAVI]),
+        'NANOE_STATUS : {}'.format(dat_dict[NANOE_STATUS]),
+        'CLEANING : {}'.format(dat_dict[CLEANING]),
+        
+        'WIN_DIR_LR :{}, {}'.format(hex(dat_dict[WIN_DIR_LR]),WIN_DIR_LR_DIC.get(dat_dict[WIN_DIR_LR])),
+        
+        ]
+    strs += myprint_addr(dat_dict)
+    for s in strs:
+        logging.debug(s)
+    return strs
+
+def myprint_cmd0x0f_request(dat_dict):
+    return myprint_cmd_comm_request(dat_dict)
+
+def myprint_cmd0x0f_response(dat_dict):
+    strs = [
+        'COLD temperature: {}'.format(dat_dict[SYSTEM_TEMP_GROUP][SYSTEM_MODE_AUTO]),
+        'WARM temperature: {}'.format(dat_dict[SYSTEM_TEMP_GROUP][SYSTEM_MODE_WARM]),
+        'WET temperature: {}'.format(dat_dict[SYSTEM_TEMP_GROUP][SYSTEM_MODE_WET]),
+        'AUTO temperature: {}'.format(dat_dict[SYSTEM_TEMP_GROUP][SYSTEM_MODE_COLD]),
+
+        'COLD SPEED: {}'.format(WIND_SPEED_DIC.get(dat_dict[SYSTEM_SPEED_GROUP][SYSTEM_MODE_COLD])),
+        'WARM SPEED: {}'.format(WIND_SPEED_DIC.get(dat_dict[SYSTEM_SPEED_GROUP][SYSTEM_MODE_WARM])),
+        'WET SPEED: {}'.format(WIND_SPEED_DIC.get(dat_dict[SYSTEM_SPEED_GROUP][SYSTEM_MODE_WET])),
+        'AUTO SPEED: {}'.format(WIND_SPEED_DIC.get(dat_dict[SYSTEM_SPEED_GROUP][SYSTEM_MODE_AUTO])),
+        'WIND SPEED: {}'.format(WIND_SPEED_DIC.get(dat_dict[SYSTEM_SPEED_GROUP][SYSTEM_MODE_WIND])),
+    ]
+    strs += myprint_addr(dat_dict)
+    for s in strs:
+        logging.debug(s)
+    return strs
+
 def myprint_fcc_error(dat_dict):
     strs = [
         'error: {}'.format(dat_dict['HEX_DATA']),
@@ -131,3 +185,4 @@ def myprint_fcc_error(dat_dict):
     for s in strs:
         logging.debug(s)
     return strs
+
