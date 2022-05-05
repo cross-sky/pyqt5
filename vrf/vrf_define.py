@@ -1,7 +1,7 @@
 '''
 Author: your name
 Date: 2022-04-23 17:14:10
-LastEditTime: 2022-05-04 23:23:49
+LastEditTime: 2022-05-05 23:06:38
 LastEditors: Please set LastEditors
 Description: In User Settings Edit
 FilePath: \pyqt5\vrf\vrf_define.py
@@ -80,6 +80,8 @@ TIMER_TYPE = 68
 TIMER_HOUR = 69
 TIMER_REMAIN_HOUR = 70
 EP_ADDR = 71
+
+
 
 # end ----------
 

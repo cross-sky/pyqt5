@@ -1,7 +1,7 @@
 '''
 Author: your name
 Date: 2022-04-09 10:03:42
-LastEditTime: 2022-05-04 23:33:50
+LastEditTime: 2022-05-05 23:52:21
 LastEditors: Please set LastEditors
 Description: In User Settings Edit
 FilePath: \video\rd505_cmd.py
@@ -103,6 +103,8 @@ class RD505CMD():
             unknow_cmd |= self.decode_cmd81_response_from_main()
             unknow_cmd |= self.decode_cmd0f_request_to_main()
             unknow_cmd |= self.decode_cmd0f_response_from_main()
+            unknow_cmd |= self.decode_cmd0c_request_to_main()
+            unknow_cmd |= self.decode_cmd0c_response_from_main()
 
             if (not unknow_cmd):
                 self.my_print_unknow_code()
@@ -560,6 +562,32 @@ class RD505CMD():
         decode_dict.update(self.cmd_decode_addr(hex_data))
         self.data_decode_dict = decode_dict
         return True
+
+
+    def decode_cmd0c_response_from_main(self):
+        hex_data = self.data
+        decode_dict = {}
+        cmd = 0x0c
+
+        check_false = False
+        check_false |=  self.check_cmd_cc(hex_data, cmd, CMD_CC_CMD_FORMAT_RESPONSE )
+        if ( not check_false ):
+            return False
+
+        logging.debug('decode cmd 0c response')
+
+        temp = hex_data[DATA_BC]
+        if ((hex_data[temp+2] == 0x30) and (temp == 9)):
+            decode_dict[TIMER_TYPE] = hex_data[DATA_CMD + 1]
+            decode_dict[TIMER_HOUR] = hex_data[DATA_CMD+2] * 5
+        elif((hex_data[temp+2] == 0x48) and (temp == 8)):
+            decode_dict[FRESH_AIR] = (hex_data[DATA_CMD+1] & BIT1) >> 1
+        
+        decode_dict.update(self.cmd_decode_addr(hex_data))
+        self.data_decode_dict = decode_dict
+        return True
+
+    
 
 
 
