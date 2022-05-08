@@ -1,7 +1,7 @@
 '''
 Author: your name
 Date: 2022-04-23 10:16:57
-LastEditTime: 2022-05-04 22:39:16
+LastEditTime: 2022-05-08 12:28:33
 LastEditors: Please set LastEditors
 Description: In User Settings Edit
 FilePath: \pyqt5\vrf\vrf_cmd_print.py
@@ -25,6 +25,17 @@ def myprint_cmd0x4c_request(dat_dict):
     return strs
     
     # hex(1)[2:].zfill(2)
+
+    
+def myprint_fcc_error(dat_dict):
+    strs = [
+        'error: {}'.format(dat_dict['HEX_DATA']),
+    ]
+    for s in strs:
+        logging.debug(s)
+    return strs
+
+
 def myprint_cmd0x49_response(dat_dict):
     addrs = myprint_addr(dat_dict)
     strs = [
@@ -178,11 +189,28 @@ def myprint_cmd0x0f_response(dat_dict):
         logging.debug(s)
     return strs
 
-def myprint_fcc_error(dat_dict):
+
+def myprint_cmd0x0c_request(dat_dict:dict):
     strs = [
-        'error: {}'.format(dat_dict['HEX_DATA']),
-    ]
+        'eep code : {}'.format(dat_dict[EP_ADDR])
+        ]
+    haskey = dat_dict.get(TIMER_TYPE)
+    if(haskey != None):
+        strs += [
+        'TIMER_TYPE  : {}'.format(dat_dict[TIMER_TYPE]),
+        'TIMER_HOUR  : {}'.format(dat_dict[TIMER_HOUR]),
+        'TIMER_REMAIN_HOUR  : {}'.format(dat_dict[TIMER_REMAIN_HOUR]),
+        ]
+    strs += myprint_addr(dat_dict)
     for s in strs:
         logging.debug(s)
     return strs
+
+
+
+
+
+
+
+
 

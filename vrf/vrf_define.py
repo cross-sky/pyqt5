@@ -1,7 +1,7 @@
 '''
 Author: your name
 Date: 2022-04-23 17:14:10
-LastEditTime: 2022-05-05 23:06:38
+LastEditTime: 2022-05-08 12:04:21
 LastEditors: Please set LastEditors
 Description: In User Settings Edit
 FilePath: \pyqt5\vrf\vrf_define.py
@@ -80,6 +80,11 @@ TIMER_TYPE = 68
 TIMER_HOUR = 69
 TIMER_REMAIN_HOUR = 70
 EP_ADDR = 71
+SYSTEM_UD_WIND_GROUP = 72
+NANOE_FUNC = 73
+ECONAVI_FUNC = 74
+SAVE_ENERGY_FUNC = 75
+
 
 
 
@@ -325,3 +330,10 @@ TIMER_TYPE_DICT = {
     TIMER_TYPE_CYCLE_OFF : 'TIMER_TYPE_CYCLE_OFF',
     TIMER_TYPE_ONCE_ON : 'TIMER_TYPE_ONCE_ON',
 }
+
+CMD10_RES_DATA_FK = 6
+CMD10_RES_DATA_P1_1 = 7
+CMD10_RES_DATA_P1_2 = 8
+CMD10_RES_DATA_P2 = 9
+CMD10_RES_DATA_P3 = 10
+CMD10_RES_DATA_P4 = 11

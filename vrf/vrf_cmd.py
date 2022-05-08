@@ -1,7 +1,7 @@
 '''
 Author: your name
 Date: 2022-04-09 10:03:42
-LastEditTime: 2022-05-05 23:52:21
+LastEditTime: 2022-05-08 12:05:37
 LastEditors: Please set LastEditors
 Description: In User Settings Edit
 FilePath: \video\rd505_cmd.py
@@ -588,7 +588,63 @@ class RD505CMD():
         return True
 
     
+    #  CMD 10 REQUEST
+    def decode_cmd10_request_to_main(self):
+        return self.decode_cmdcomm_request_to_main(0x10)   
 
+    def decode_cmd10_response_from_main(self):
+        hex_data = self.data
+        decode_dict = {}
+        cmd = 0x10
+
+        check_false = False
+        check_false |=  self.check_cmd_cc(hex_data, cmd, CMD_CC_CMD_FORMAT_RESPONSE )
+        if ( not check_false ):
+            return False
+
+        logging.debug('decode cmd 10 response')
+
+        temp_group = [0, 0, 0, 0, 0]
+        temp_group[SYSTEM_MODE_AUTO] = (hex_data[CMD10_RES_DATA_P1_1 ] >> 4) 
+        temp_group[SYSTEM_MODE_WARM] = (hex_data[CMD10_RES_DATA_P1_1 ] & 0X0F) 
+        temp_group[SYSTEM_MODE_WET] = (hex_data[CMD10_RES_DATA_P1_2 ] >> 4) 
+        temp_group[SYSTEM_MODE_COLD] = (hex_data[CMD10_RES_DATA_P1_2 ] & 0X0F) 
+        decode_dict[SYSTEM_UD_WIND_GROUP] = temp_group
+        
+        decode_dict[NANOE_FUNC] = hex_data[CMD10_RES_DATA_P2] & BIT0
+        decode_dict[ECONAVI_FUNC] = (hex_data[CMD10_RES_DATA_P2] & BIT3) >> 3
+        
+        decode_dict.update(self.cmd_decode_addr(hex_data))
+        self.data_decode_dict = decode_dict
+        return True
+
+
+    #  CMD 54 REQUEST
+    def decode_cmd54_request_to_main(self):
+        hex_data = self.data
+        decode_dict = {}
+        cmd = 0x54
+
+        check_false = False
+        check_false |=  self.check_cmd_cc(hex_data, cmd, CMD_CC_CMD_FORMAT_CONFIG )
+        check_false |=  self.check_cmd_cc(hex_data, cmd, CMD_CC_CMD_FORMAT_REQUEST )
+        if ( not check_false ):
+            return False
+
+        if (self.get_cmd_cc(hex_data) == CMD_CC_CMD_FORMAT_CONFIG):
+            decode_dict[SAVE_ENERGY_FUNC] = hex_data[6]&BIT0
+            decode_dict[SAVE_ENERGY] = (hex_data[6]&BIT1) >> 1
+            logging.debug('decode cmd 54 config')
+               
+            decode_dict[MYPRINT_FUNCTION] = self.myprint_function(cmd, CMD_CC_CMD_FORMAT_CONFIG)
+        
+        else:
+            logging.debug('decode cmd 54 request')
+            decode_dict[MYPRINT_FUNCTION] = self.myprint_function(cmd, CMD_CC_CMD_FORMAT_REQUEST)
+        
+        decode_dict.update(self.cmd_decode_addr(hex_data))
+        self.data_decode_dict = decode_dict
+        return True
 
 
 
