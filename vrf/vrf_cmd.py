@@ -1,7 +1,7 @@
 '''
 Author: your name
 Date: 2022-04-09 10:03:42
-LastEditTime: 2022-05-08 12:05:37
+LastEditTime: 2022-05-09 23:48:00
 LastEditors: Please set LastEditors
 Description: In User Settings Edit
 FilePath: \video\rd505_cmd.py
@@ -583,6 +583,7 @@ class RD505CMD():
         elif((hex_data[temp+2] == 0x48) and (temp == 8)):
             decode_dict[FRESH_AIR] = (hex_data[DATA_CMD+1] & BIT1) >> 1
         
+        decode_dict[MYPRINT_FUNCTION] = self.myprint_function(cmd, CMD_CC_CMD_FORMAT_RESPONSE)
         decode_dict.update(self.cmd_decode_addr(hex_data))
         self.data_decode_dict = decode_dict
         return True
@@ -605,15 +606,16 @@ class RD505CMD():
         logging.debug('decode cmd 10 response')
 
         temp_group = [0, 0, 0, 0, 0]
-        temp_group[SYSTEM_MODE_AUTO] = (hex_data[CMD10_RES_DATA_P1_1 ] >> 4) 
+        temp_group[SYSTEM_MODE_WET] = (hex_data[CMD10_RES_DATA_P1_1 ] >> 4) 
         temp_group[SYSTEM_MODE_WARM] = (hex_data[CMD10_RES_DATA_P1_1 ] & 0X0F) 
-        temp_group[SYSTEM_MODE_WET] = (hex_data[CMD10_RES_DATA_P1_2 ] >> 4) 
+        temp_group[SYSTEM_MODE_WIND] = (hex_data[CMD10_RES_DATA_P1_2 ] >> 4) 
         temp_group[SYSTEM_MODE_COLD] = (hex_data[CMD10_RES_DATA_P1_2 ] & 0X0F) 
         decode_dict[SYSTEM_UD_WIND_GROUP] = temp_group
         
         decode_dict[NANOE_FUNC] = hex_data[CMD10_RES_DATA_P2] & BIT0
         decode_dict[ECONAVI_FUNC] = (hex_data[CMD10_RES_DATA_P2] & BIT3) >> 3
         
+        decode_dict[MYPRINT_FUNCTION] = self.myprint_function(cmd, CMD_CC_CMD_FORMAT_RESPONSE)
         decode_dict.update(self.cmd_decode_addr(hex_data))
         self.data_decode_dict = decode_dict
         return True

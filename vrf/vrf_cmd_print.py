@@ -1,7 +1,7 @@
 '''
 Author: your name
 Date: 2022-04-23 10:16:57
-LastEditTime: 2022-05-08 12:28:33
+LastEditTime: 2022-05-09 23:26:57
 LastEditors: Please set LastEditors
 Description: In User Settings Edit
 FilePath: \pyqt5\vrf\vrf_cmd_print.py
@@ -206,11 +206,43 @@ def myprint_cmd0x0c_request(dat_dict:dict):
         logging.debug(s)
     return strs
 
+def myprint_cmd0x0c_response(dat_dict:dict):
+    strs = []
+    haskey = dat_dict.get(TIMER_TYPE)
+    if(haskey != None):
+        strs += [
+        'TIMER_TYPE  : {}'.format(dat_dict[TIMER_TYPE]),
+        'TIMER_HOUR  : {}'.format(dat_dict[TIMER_HOUR]),
+        ]
+        
+    haskey = dat_dict.get(TIMER_TYPE)
+    if(haskey != None):
+        strs += [
+        'FRESH_AIR  : {}'.format(dat_dict[FRESH_AIR]),
+        ]
+    strs += myprint_addr(dat_dict)
+    for s in strs:
+        logging.debug(s)
+    return strs
 
 
+def myprint_cmd0x10_request(dat_dict):
+    return myprint_cmd_comm_request(dat_dict)
 
 
-
+def myprint_cmd0x10_response(dat_dict):
+    strs = [
+        'COLD UD WIND: {}'.format(dat_dict[SYSTEM_UD_WIND_GROUP][SYSTEM_MODE_COLD]),
+        'WARM UD WIND: {}'.format(dat_dict[SYSTEM_UD_WIND_GROUP][SYSTEM_MODE_WARM]),
+        'WET UD WIND: {}'.format(dat_dict[SYSTEM_UD_WIND_GROUP][SYSTEM_MODE_WET]),
+        'WIND UD WIND: {}'.format(dat_dict[SYSTEM_UD_WIND_GROUP][SYSTEM_MODE_WIND]),
+        'NANOE_FUNC : {}'.format(dat_dict[NANOE_FUNC]),
+        'ECONAVI_FUNC : {}'.format(dat_dict[ECONAVI_FUNC]),
+    ]
+    strs += myprint_addr(dat_dict)
+    for s in strs:
+        logging.debug(s)
+    return strs
 
 
 
