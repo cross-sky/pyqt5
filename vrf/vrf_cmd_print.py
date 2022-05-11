@@ -1,7 +1,7 @@
 '''
 Author: your name
 Date: 2022-04-23 10:16:57
-LastEditTime: 2022-05-09 23:26:57
+LastEditTime: 2022-05-11 23:21:36
 LastEditors: Please set LastEditors
 Description: In User Settings Edit
 FilePath: \pyqt5\vrf\vrf_cmd_print.py
@@ -192,7 +192,7 @@ def myprint_cmd0x0f_response(dat_dict):
 
 def myprint_cmd0x0c_request(dat_dict:dict):
     strs = [
-        'eep code : {}'.format(dat_dict[EP_ADDR])
+        'eep code : {}'.format(hex(dat_dict[EP_ADDR]))
         ]
     haskey = dat_dict.get(TIMER_TYPE)
     if(haskey != None):
@@ -245,4 +245,53 @@ def myprint_cmd0x10_response(dat_dict):
     return strs
 
 
+def myprint_cmd0x08_request(dat_dict):
+    return myprint_cmd_comm_request(dat_dict)
 
+def myprint_cmd0x08_response(dat_dict):
+    return myprint_cmd_comm_request(dat_dict)
+
+def myprint_cmd0x13_request(dat_dict):
+    return myprint_cmd_comm_request(dat_dict)
+
+def myprint_cmd0x13_response(dat_dict:dict):
+    strs = [
+        'CMD13_EEPRON_DATA : {}'.format(hex(dat_dict[CMD13_EEPRON_DATA]))
+        ]
+    strs += myprint_addr(dat_dict)
+    for s in strs:
+        logging.debug(s)
+    return strs
+
+def myprint_cmd0x5f_request(dat_dict:dict):
+    strs = [
+        
+        ]
+    haskey = dat_dict.get(CMD5F_CONFIG_DATA8_WIFI)
+    if(haskey != None):
+        strs += [
+        'CMD5F_CONFIG_DATA6_TYPE :{} {}'.format(dat_dict[CMD5F_CONFIG_DATA6_TYPE], CMD5F_CONFIG_DATA6_DICT.get(dat_dict[CMD5F_CONFIG_DATA6_TYPE])),
+        'CMD5F_CONFIG_DATA7_STATE : {}'.format(dat_dict[CMD5F_CONFIG_DATA7_STATE]),
+        'CMD5F_CONFIG_DATA8_WIFI  : {}'.format(dat_dict[CMD5F_CONFIG_DATA8_WIFI]),
+        ]
+
+    strs += myprint_addr(dat_dict)
+    for s in strs:
+        logging.debug(s)
+    return strs
+
+def myprint_cmd0x5f_response(dat_dict:dict):
+    strs = [
+        'WIFI_STATE : {}'.format(dat_dict[WIFI_STATE]),
+        'TEMPER_IN : {}'.format(dat_dict[TEMPER_IN]),
+        'TEMPER_TUPING1 : {}'.format(dat_dict[TEMPER_TUPING1]),
+        'TEMPER_TUPING2 : {}'.format(dat_dict[TEMPER_TUPING2]),
+        ]
+
+    strs += myprint_addr(dat_dict)
+    for s in strs:
+        logging.debug(s)
+    return strs
+
+def myprint_cmd0x51_request(dat_dict):
+    return myprint_cmd_comm_request(dat_dict)

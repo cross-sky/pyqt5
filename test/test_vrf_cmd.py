@@ -1,7 +1,7 @@
 '''
 Author: your name
 Date: 2022-04-09 10:04:10
-LastEditTime: 2022-04-30 21:39:20
+LastEditTime: 2022-05-11 22:56:23
 LastEditors: Please set LastEditors
 Description: In User Settings Edit
 FilePath: \video\test\test_rd505_cmd.py
@@ -87,3 +87,32 @@ def test_decode_cmd0a_req_res_to_main():
     data2 = '00 40 18 0E 80 0A 22 2F 0F 82 6A 82 66 82 6A 7C 68 32 1C'
     datas = [data1, data2] #, data3, data4, data5
     print_t(datas)
+
+
+def test_decode_cm81_req_res_to_main():
+    data1 = '40 01 15 04 08 81 00 00 D9'
+    data2 = '01 FE 58 10 80 81 35 6C 02 00 6E 09 E9 FF 00 00 00 00 00 00 9C'
+    datas = [data1, data2] #, data3, data4, data5
+    print_t(datas)
+
+
+
+def test_decode_cm0f_0c_10_req_res_to_main():
+    data1 = '40 00 15 02 08 0F 50'
+    data2 = '00 40 18 0A 80 0F 76 72 7A 82 23 55 03 00 54'
+    data3 = '40 00 15 02 08 10 4F'
+    data4 = '00 40 18 08 80 10 02 33 33 01 00 03 C0'
+    data5 = '40 00 15 07 08 0C 81 00 00 48 00 9F'
+    data6 = '00 40 18 08 80 0C 00 00 00 00 48 00 94'
+    data7 = '40 00 15 02 08 08 57'
+    data8 = '00 40 18 14 80 08 43 53 2D 4D 45 37 44 30 41 58 37 42 20 20 20 20 00 66 B8'
+    data9 = '40 00 15 02 08 13 4C'
+    data10 = '00 40 18 06 80 13 00 52 95 0B 01'
+    data11 = '40 00 15 03 08 5F 00 01'
+    data12 = '00 40 18 0B 80 5F 00 00 00 00 00 00 75 77 75 FB'
+    data13 = '40 F0 10 03 00 51 00 F2'
+    
+    datas = [data1, data2, data3, data4, data5, data6, data7, data8, data9, data10, data11, data12, data13] #, data3, data4, data5
+    print_t(datas)
+
+    

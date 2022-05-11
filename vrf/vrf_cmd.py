@@ -1,7 +1,7 @@
 '''
 Author: your name
 Date: 2022-04-09 10:03:42
-LastEditTime: 2022-05-09 23:48:00
+LastEditTime: 2022-05-11 23:24:15
 LastEditors: Please set LastEditors
 Description: In User Settings Edit
 FilePath: \video\rd505_cmd.py
@@ -92,7 +92,7 @@ class RD505CMD():
 
         # compare type is bytes or strs
         if (isinstance(self.data, bytes)):
-            unknow_cmd |= self.decode_cmd4c_request_from_main()
+            unknow_cmd |= self.decode_cmd4c_request_to_main()
             unknow_cmd |= self.decode_cmd49_response_from_main()
             unknow_cmd |= self.decode_cmd0d_response_from_main()
             unknow_cmd |= self.decode_cmd0d_request_to_main()
@@ -105,6 +105,17 @@ class RD505CMD():
             unknow_cmd |= self.decode_cmd0f_response_from_main()
             unknow_cmd |= self.decode_cmd0c_request_to_main()
             unknow_cmd |= self.decode_cmd0c_response_from_main()
+            unknow_cmd |= self.decode_cmd10_request_to_main()
+            unknow_cmd |= self.decode_cmd10_response_from_main()
+            unknow_cmd |= self.decode_cmd08_request_to_main()
+            unknow_cmd |= self.decode_cmd08_response_from_main()
+            unknow_cmd |= self.decode_cmd13_request_to_main()
+            unknow_cmd |= self.decode_cmd13_response_from_main()
+            unknow_cmd |= self.decode_cmd5f_request_to_main()
+            unknow_cmd |= self.decode_cmd5f_response_from_main()
+            unknow_cmd |= self.decode_cmd51_request_to_main()
+
+
 
             if (not unknow_cmd):
                 self.my_print_unknow_code()
@@ -165,7 +176,7 @@ class RD505CMD():
         return (hex_data[DATA_CC]&BIT1) >> 1
 
     # decode cmd 4c rc request
-    def decode_cmd4c_request_from_main(self):
+    def decode_cmd4c_request_to_main(self):
         hex_data = self.data
         decode_dict = {}
         cmd_cc = 0x4c
@@ -190,7 +201,7 @@ class RD505CMD():
 
         decode_dict[WIN_DIR_LR] = hex_data[9] & 0x3f
 
-        decode_dict[MYPRINT_FUNCTION] = self.myprint_function(cmd_cc, CMD_CC_CMD_FORMAT_REQUEST)
+        decode_dict[MYPRINT_FUNCTION] = self.myprint_function(cmd_cc, CMD_CC_CMD_FORMAT_CONFIG)
         self.data_decode_dict = decode_dict
         return True
 
@@ -200,9 +211,24 @@ class RD505CMD():
         # cmd = 0x06
         # check cmd 06 req
         if (self.check_cmd_cc(hex_data, cmd, CMD_CC_CMD_FORMAT_REQUEST)):
-            logging.debug('decode cmd06 Rc recontrol request')
+            logging.debug('decode cmd {} Rc recontrol request'.format(hex(cmd)))
             decode_dict.update(self.cmd_decode_addr(hex_data))
             decode_dict[MYPRINT_FUNCTION] = self.myprint_function(cmd, CMD_CC_CMD_FORMAT_REQUEST)
+            self.data_decode_dict = decode_dict
+            return True
+        # elif(not self.check_cmd_cc(hex_data, cmd, CMD_CC_CMD_FORMAT_CONFIG)):
+        #     pass
+            
+        return False
+
+    def decode_cmdcomm_response_to_main(self, cmd):
+        decode_dict = {}
+        hex_data = self.data
+
+        if (self.check_cmd_cc(hex_data, cmd, CMD_CC_CMD_FORMAT_RESPONSE)):
+            logging.debug('decode cmd {} Rc recontrol response'.format(hex(cmd)))
+            decode_dict.update(self.cmd_decode_addr(hex_data))
+            decode_dict[MYPRINT_FUNCTION] = self.myprint_function(cmd, CMD_CC_CMD_FORMAT_RESPONSE)
             self.data_decode_dict = decode_dict
             return True
         # elif(not self.check_cmd_cc(hex_data, cmd, CMD_CC_CMD_FORMAT_CONFIG)):
@@ -369,6 +395,9 @@ class RD505CMD():
                 return True
         return False
 
+    #  CMD 49 REQUEST
+    def decode_cmd49_request_to_main(self):
+        return self.decode_cmdcomm_request_to_main(0x49) 
 
     def decode_cmd49_response_from_main(self):
         hex_data = self.data
@@ -649,13 +678,136 @@ class RD505CMD():
         return True
 
 
+    def decode_cmd54_response_from_main(self):
+        hex_data = self.data
+        decode_dict = {}
+        cmd = 0x54
 
+        check_false = False
+        check_false |=  self.check_cmd_cc(hex_data, cmd, CMD_CC_CMD_FORMAT_RESPONSE )
+        if ( not check_false ):
+            return False
 
+        logging.debug('decode cmd {} response'.format(hex(cmd)))
 
+        decode_dict[SAVE_ENERGY_FUNC] = hex_data[DATA_CMD + 1] &BIT0
+        decode_dict[SAVE_ENERGY] = (hex_data[DATA_CMD + 1] &BIT1) >> 1
+
+        
+        decode_dict[MYPRINT_FUNCTION] = self.myprint_function(cmd, CMD_CC_CMD_FORMAT_RESPONSE)
+        decode_dict.update(self.cmd_decode_addr(hex_data))
+        self.data_decode_dict = decode_dict
+        return True
+
+    #  CMD 08 REQUEST
+    def decode_cmd08_request_to_main(self):
+        return self.decode_cmdcomm_request_to_main(0x08) 
+
+    #  CMD 08 response
+    def decode_cmd08_response_from_main(self):
+        return self.decode_cmdcomm_response_to_main(0x08)
 
     
+    #  CMD 13 REQUEST
+    def decode_cmd13_request_to_main(self):
+        return self.decode_cmdcomm_request_to_main(0x13) 
+
+    def decode_cmd13_response_from_main(self):
+        hex_data = self.data
+        decode_dict = {}
+        cmd = 0x13
+
+        check_false = False
+        check_false |=  self.check_cmd_cc(hex_data, cmd, CMD_CC_CMD_FORMAT_RESPONSE )
+        if ( not check_false ):
+            return False
+        logging.debug('decode cmd {} response'.format(hex(cmd)))
+        
+        decode_dict[CMD13_EEPRON_DATA] = (hex_data[DATA_CMD + 2] << 8) + hex_data[DATA_CMD + 3]
+
+        decode_dict[MYPRINT_FUNCTION] = self.myprint_function(cmd, CMD_CC_CMD_FORMAT_RESPONSE)
+        decode_dict.update(self.cmd_decode_addr(hex_data))
+        self.data_decode_dict = decode_dict
+        return True
 
 
+    #  CMD 5F REQUEST
+    def decode_cmd5f_request_to_main(self):
+        hex_data = self.data
+        decode_dict = {}
+        cmd = 0x5f
+
+        check_false = False
+        check_false |=  self.check_cmd_cc(hex_data, cmd, CMD_CC_CMD_FORMAT_CONFIG )
+        check_false |=  self.check_cmd_cc(hex_data, cmd, CMD_CC_CMD_FORMAT_REQUEST )
+        if ( not check_false ):
+            return False
+
+        if (self.get_cmd_cc(hex_data) == CMD_CC_CMD_FORMAT_CONFIG):
+            decode_dict[CMD5F_CONFIG_DATA6_TYPE] = hex_data[6]
+            decode_dict[CMD5F_CONFIG_DATA7_STATE] = hex_data[7]
+
+            if (hex_data[6] == 4):
+                decode_dict[CMD5F_CONFIG_DATA8_WIFI] = hex_data[8]            
+
+            logging.debug('decode cmd 5f config')
+               
+            decode_dict[MYPRINT_FUNCTION] = self.myprint_function(cmd, CMD_CC_CMD_FORMAT_CONFIG)
+        
+        else:
+            logging.debug('decode cmd 5f request')
+            decode_dict[MYPRINT_FUNCTION] = self.myprint_function(cmd, CMD_CC_CMD_FORMAT_REQUEST)
+        
+        decode_dict.update(self.cmd_decode_addr(hex_data))
+        self.data_decode_dict = decode_dict
+        return True
+
+    def decode_cmd5f_response_from_main(self):
+        hex_data = self.data
+        decode_dict = {}
+        cmd = 0x5f
+
+        check_false = False
+        check_false |=  self.check_cmd_cc(hex_data, cmd, CMD_CC_CMD_FORMAT_RESPONSE )
+        if ( not check_false ):
+            return False
+        logging.debug('decode cmd {} response'.format(hex(cmd)))
+        
+        decode_dict[WIFI_STATE] = (hex_data[10] & BIT0)
+        decode_dict[TEMPER_IN] = (hex_data[12] * 5 - 350) / 10 
+        decode_dict[TEMPER_TUPING1] = (hex_data[13] * 5 - 350) / 10 
+        decode_dict[TEMPER_TUPING2] = (hex_data[14] * 5 - 350) / 10 
+
+        decode_dict[MYPRINT_FUNCTION] = self.myprint_function(cmd, CMD_CC_CMD_FORMAT_RESPONSE)
+        decode_dict.update(self.cmd_decode_addr(hex_data))
+        self.data_decode_dict = decode_dict
+        return True
+    
+
+    #  CMD 51 REQUEST
+    def decode_cmd51_request_to_main(self):
+        hex_data = self.data
+        decode_dict = {}
+        cmd = 0x51
+
+        check_false = False
+        check_false |=  self.check_cmd_cc(hex_data, cmd, CMD_CC_CMD_FORMAT_CONFIG )
+        check_false |=  self.check_cmd_cc(hex_data, cmd, CMD_CC_CMD_FORMAT_REQUEST )
+        if ( not check_false ):
+            return False
+
+        if (self.get_cmd_cc(hex_data) == CMD_CC_CMD_FORMAT_CONFIG):
+            logging.debug('decode cmd 51 config')
+               
+            decode_dict[MYPRINT_FUNCTION] = self.myprint_function(cmd, CMD_CC_CMD_FORMAT_CONFIG)
+        
+        else:
+            logging.debug('decode cmd 51 request')
+            decode_dict[MYPRINT_FUNCTION] = self.myprint_function(cmd, CMD_CC_CMD_FORMAT_REQUEST)
+        
+        decode_dict.update(self.cmd_decode_addr(hex_data))
+        self.data_decode_dict = decode_dict
+        return True
             
 
             

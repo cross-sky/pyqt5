@@ -1,7 +1,7 @@
 '''
 Author: your name
 Date: 2022-04-23 17:14:10
-LastEditTime: 2022-05-08 12:04:21
+LastEditTime: 2022-05-11 22:37:25
 LastEditors: Please set LastEditors
 Description: In User Settings Edit
 FilePath: \pyqt5\vrf\vrf_define.py
@@ -84,8 +84,14 @@ SYSTEM_UD_WIND_GROUP = 72
 NANOE_FUNC = 73
 ECONAVI_FUNC = 74
 SAVE_ENERGY_FUNC = 75
-
-
+CMD13_EEPRON_DATA = 76
+CMD5F_CONFIG_DATA6_TYPE = 77
+CMD5F_CONFIG_DATA7_STATE = 78
+CMD5F_CONFIG_DATA8_WIFI = 79
+WIFI_STATE = 80
+TEMPER_IN = 81
+TEMPER_TUPING1 = 82
+TEMPER_TUPING2 = 83
 
 
 # end ----------
@@ -240,10 +246,10 @@ CMD0A_RES_DATA_FB = 16
 CMD0A_RES_DATA_FL2 = 17
 
 # WIN DIR
-UD_WIND_DIR_GROUP_NO = 0 #					// 娌℃湁涓婁笅椋庡悜   
-UD_WIND_DIR_GROUP_3 = 1 #					// 涓婁笅椋庡悜3妗�      
-UD_WIND_DIR_GROUP_5 = 2 #					// 涓婁笅椋庡悜5妗�  
-UD_WIND_DIR_GROUP_ONLY_AUTO = 3 #			// 涓婁笅椋庡悜鍙湁鑷姩  
+UD_WIND_DIR_GROUP_NO = 0 #					// 濞屸剝婀佹稉濠佺瑓妞嬪骸鎮�   
+UD_WIND_DIR_GROUP_3 = 1 #					// 娑撳﹣绗呮搴℃倻3濡楋拷      
+UD_WIND_DIR_GROUP_5 = 2 #					// 娑撳﹣绗呮搴℃倻5濡楋拷  
+UD_WIND_DIR_GROUP_ONLY_AUTO = 3 #			// 娑撳﹣绗呮搴℃倻閸欘亝婀侀懛顏勫З  
 UD_WIND_DIR_GROUP_DICT = {
     UD_WIND_DIR_GROUP_NO : 'UD_WIND_DIR_GROUP_NO',
     UD_WIND_DIR_GROUP_3 : 'UD_WIND_DIR_GROUP_3',
@@ -251,10 +257,10 @@ UD_WIND_DIR_GROUP_DICT = {
     UD_WIND_DIR_GROUP_ONLY_AUTO : 'UD_WIND_DIR_GROUP_ONLY_AUTO',
 }
 
-LR_WIND_DIR_GROUP_NO = 0 #					// 娌℃湁宸﹀彸椋庡悜   
-LR_WIND_DIR_GROUP_3 = 1 #					// 宸﹀彸椋庡悜3妗�    
-LR_WIND_DIR_GROUP_5 = 2 #					// 宸﹀彸椋庡悜5妗�   
-LR_WIND_DIR_GROUP_ONLY_AUTO = 3 #			// 宸﹀彸椋庡悜鍙湁鑷姩   
+LR_WIND_DIR_GROUP_NO = 0 #					// 濞屸剝婀佸锕€褰告搴℃倻   
+LR_WIND_DIR_GROUP_3 = 1 #					// 瀹革箑褰告搴℃倻3濡楋拷    
+LR_WIND_DIR_GROUP_5 = 2 #					// 瀹革箑褰告搴℃倻5濡楋拷   
+LR_WIND_DIR_GROUP_ONLY_AUTO = 3 #			// 瀹革箑褰告搴℃倻閸欘亝婀侀懛顏勫З   
 LR_WIND_DIR_GROUP_DICT = {
     LR_WIND_DIR_GROUP_NO : 'LR_WIND_DIR_GROUP_NO',
     LR_WIND_DIR_GROUP_3 : 'LR_WIND_DIR_GROUP_3',
@@ -337,3 +343,10 @@ CMD10_RES_DATA_P1_2 = 8
 CMD10_RES_DATA_P2 = 9
 CMD10_RES_DATA_P3 = 10
 CMD10_RES_DATA_P4 = 11
+
+CMD5F_CONFIG_DATA6_DICT = {
+    1 : 'CMD_5F_FNC_WIND_STRONG',
+    2 : 'CMD_5F_FNC_WIND_MUTE',
+    3 : 'CMD_5F_FNC_LED_DUTY',
+    4 : 'CMD_5F_FNC_WIFI',
+}
