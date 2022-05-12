@@ -66,6 +66,13 @@ p, li { white-space: pre-wrap; }
       </property>
      </widget>
     </item>
+    <item row="0" column="0">
+     <widget class="QPushButton" name="testButton">
+      <property name="text">
+       <string>test bound</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">

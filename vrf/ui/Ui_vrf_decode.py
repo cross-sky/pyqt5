@@ -23,6 +23,7 @@ class Ui_MainWindow(object):
         self.decodeButton.setObjectName("decodeButton")
         self.gridLayout.addWidget(self.decodeButton, 0, 1, 1, 1)
         self.inputText = QtWidgets.QTextEdit(self.centralwidget)
+        self.inputText.setMaximumSize(QtCore.QSize(16777215, 100))
         self.inputText.setObjectName("inputText")
         self.gridLayout.addWidget(self.inputText, 1, 0, 1, 1)
         self.label = QtWidgets.QLabel(self.centralwidget)
@@ -34,6 +35,9 @@ class Ui_MainWindow(object):
         self.label_2 = QtWidgets.QLabel(self.centralwidget)
         self.label_2.setObjectName("label_2")
         self.gridLayout.addWidget(self.label_2, 2, 1, 1, 1)
+        self.testButton = QtWidgets.QPushButton(self.centralwidget)
+        self.testButton.setObjectName("testButton")
+        self.gridLayout.addWidget(self.testButton, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 683, 23))
@@ -64,3 +68,4 @@ class Ui_MainWindow(object):
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">sdfhaksjdhf</p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">sdkjfhlskadf</p></body></html>"))
         self.label_2.setText(_translate("MainWindow", "decode code"))
+        self.testButton.setText(_translate("MainWindow", "test bound"))

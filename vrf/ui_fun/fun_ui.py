@@ -1,7 +1,7 @@
 '''
 Author: your name
 Date: 2022-04-16 15:24:36
-LastEditTime: 2022-04-30 12:38:00
+LastEditTime: 2022-05-12 23:23:18
 LastEditors: Please set LastEditors
 Description: In User Settings Edit
 FilePath: \pyqt5\EX1GuessNum\function\func_guess_num.py
@@ -14,9 +14,11 @@ from PyQt5.QtWidgets import QDialog, QFileDialog, QMainWindow, QMessageBox
 from random import randint
 
 sys.path.append('.')
+# sys.path.append('..')
 
 from vrf.ui.Ui_vrf_decode import Ui_MainWindow
 from vrf.vrf_cmd_print import *
+from .ui_bounderate_fun import BoundRateVrfUi
 
 class FunVrfUi(QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None) -> None:
@@ -25,12 +27,23 @@ class FunVrfUi(QMainWindow, Ui_MainWindow):
 
         self.messageBox = QMessageBox()
 
+        self.boundrateWindow = None
+
     def closeEvent(self, event):
         reply = self.messageBox.question(self, 'MAKE', 'EXIT?', QMessageBox.Yes,QMessageBox.No)
         if reply == QMessageBox.Yes:
             event.accept()
         else:
             event.ignore()
+
+    @pyqtSlot()
+    def on_testButton_clicked(self):
+        if self.boundrateWindow is None:
+            self.boundrateWindow = BoundRateVrfUi()
+        
+        self.boundrateWindow.show()
+            # self.boundrateWindow.exec_()
+
 
     @pyqtSlot()
     def on_decodeButton_clicked(self):
