@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>220</width>
+    <width>218</width>
     <height>218</height>
    </rect>
   </property>
@@ -35,55 +35,58 @@
    <layout class="QFormLayout" name="formLayout">
     <item row="0" column="0">
      <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Boundrate</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QComboBox" name="comboBox_bits"/>
-      </item>
-      <item row="7" column="1">
-       <widget class="QComboBox" name="comboBox_flow"/>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>Stopbit</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_4">
-        <property name="text">
-         <string>cc</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QComboBox" name="comboBox_boundrate"/>
-      </item>
-      <item row="3" column="1">
-       <widget class="QComboBox" name="comboBox_cc"/>
-      </item>
-      <item row="7" column="0">
+      <item row="8" column="0">
        <widget class="QLabel" name="label_5">
         <property name="text">
          <string>flow</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
+      <item row="4" column="1">
+       <widget class="QComboBox" name="comboBox_cc"/>
+      </item>
+      <item row="3" column="1">
        <widget class="QComboBox" name="comboBox_stopbit"/>
       </item>
-      <item row="1" column="0">
+      <item row="1" column="1">
+       <widget class="QComboBox" name="comboBox_boundrate"/>
+      </item>
+      <item row="2" column="1">
+       <widget class="QComboBox" name="comboBox_bits"/>
+      </item>
+      <item row="2" column="0">
        <widget class="QLabel" name="label_2">
         <property name="text">
          <string>bit</string>
         </property>
        </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>cc</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Stopbit</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Boundrate</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="1">
+       <widget class="QComboBox" name="comboBox_flow"/>
+      </item>
+      <item row="0" column="0">
+       <widget class="QComboBox" name="comboBox_serialList"/>
       </item>
      </layout>
     </item>
@@ -101,7 +104,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>220</width>
+     <width>218</width>
      <height>23</height>
     </rect>
    </property>
@@ -109,5 +112,22 @@
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>62</x>
+     <y>182</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>203</x>
+     <y>-11</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
