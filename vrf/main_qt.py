@@ -1,7 +1,7 @@
 '''
 Author: your name
 Date: 2022-04-16 16:04:07
-LastEditTime: 2022-05-15 01:01:31
+LastEditTime: 2022-05-17 00:14:37
 LastEditors: Please set LastEditors
 Description: In User Settings Edit
 FilePath: \pyqt5\EX1GuessNum\guess_num_main.py
@@ -17,6 +17,7 @@ from PyQt5.QtCore import pyqtSlot
 
 import sys, os
 
+sys.path.append(".")
 sys.path.append("..")
 
 print('cur path: ', os.getcwd())
@@ -24,7 +25,7 @@ print('sys path:', sys.path[0])
 
 
 # from vrf.ui_fun.fun_ui import FunVrfUi
-from vrf.ui_fun.ui_mainwindow_fun import MainWindowUi
+from ui_fun.ui_mainwindow_fun import MainWindowUi
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

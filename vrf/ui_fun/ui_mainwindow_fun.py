@@ -1,7 +1,7 @@
 '''
 Author: your name
 Date: 2022-05-14 22:52:12
-LastEditTime: 2022-05-15 10:27:35
+LastEditTime: 2022-05-17 00:21:47
 LastEditors: Please set LastEditors
 Description: In User Settings Edit
 FilePath: \\pyqt5\\vrf\\ui_fun\\ui_mainwindow_fun.py
@@ -21,9 +21,11 @@ import time
 import os
 
 sys.path.append('..')
+sys.path.append('.')
+
 
 from ui.Ui_main_window import Ui_MainWindow
-from .ui_bounderate_fun import BoundRateVrfUi
+from ui_bounderate_dialog_fun import BoundRateVrfUi, SerDiaEnum
 
 # from vrf.vrf_cmd_print import *
 
@@ -36,18 +38,31 @@ class MainWindowUi(QMainWindow, Ui_MainWindow):
         self.serial = None
         
         self.serialList = ['com0', 'com1']
-        
+        self.serialList_index = 1
 
-
+        self.boundrateWindow.signal_serial.connect(self.updateSeriaSetting)
         # set object paramaters
-        self.lineEdit_boundrate = self.boundrateWindow.comboBox_boundrate
+        # self.lineEdit_boundrate = self.boundrateWindow.comboBox_boundrate
+
+
+
+    def updateSeriaSetting(self, dicts:dict):
+        self.lineEdit_boundrate.setText(dicts[SerDiaEnum.BOUNDRATE.value])
         
 
     @pyqtSlot()
     def on_pushButton_set_boundrate_clicked(self):
         # if self.boundrateWindow is None:
         #     self.boundrateWindow = BoundRateVrfUi()
+        self.boundrateWindow.comboBox_serialList.itemData = []
         self.boundrateWindow.comboBox_serialList.addItems(self.serialList)
+        send_dict = {}
+        send_dict[SerDiaEnum.COMS.value] = self.serialList
+        send_dict[SerDiaEnum.COMS_INDEX.value] = self.serialList_index
+        send_dict[SerDiaEnum.COM_CC_INDEX.value] = 1
+        send_dict[SerDiaEnum.COM_BITS_INDEX.value] = 1
+        send_dict[SerDiaEnum.BOUNDRATE_INDEX.value] = 1
+        self.boundrateWindow.setSeriaData(send_dict)
         self.boundrateWindow.raise_()
         self.boundrateWindow.show()
     
