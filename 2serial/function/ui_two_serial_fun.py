@@ -35,3 +35,5 @@ class MainWindowUi(QMainWindow, Ui_MainWindow):
         super(MainWindowUi, self).__init__()
         self.setupUi(self)
 
+        # self.pushButton_set_boundrate.clicked.connect
+

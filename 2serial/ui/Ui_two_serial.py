@@ -45,6 +45,9 @@ class Ui_MainWindow(object):
         self.gridLayout_2.addWidget(self.textBrowser_2, 0, 1, 1, 1)
         self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setObjectName("verticalLayout")
+        self.pushButton_refleshSerial = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_refleshSerial.setObjectName("pushButton_refleshSerial")
+        self.verticalLayout.addWidget(self.pushButton_refleshSerial)
         self.pushButton_set_boundrate = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_set_boundrate.setObjectName("pushButton_set_boundrate")
         self.verticalLayout.addWidget(self.pushButton_set_boundrate)
@@ -108,6 +111,7 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.pushButton_sendB.setText(_translate("MainWindow", "COMB 发送"))
+        self.pushButton_refleshSerial.setText(_translate("MainWindow", "刷新串口"))
         self.pushButton_set_boundrate.setText(_translate("MainWindow", "波特率设置"))
         self.label_4.setText(_translate("MainWindow", "Name A"))
         self.label.setText(_translate("MainWindow", "COMA"))

@@ -74,6 +74,13 @@
       <item row="2" column="0">
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
+         <widget class="QPushButton" name="pushButton_refleshSerial">
+          <property name="text">
+           <string>刷新串口</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QPushButton" name="pushButton_set_boundrate">
           <property name="text">
            <string>波特率设置</string>

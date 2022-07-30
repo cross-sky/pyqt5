@@ -1,7 +1,7 @@
 '''
 Author: your name
 Date: 2022-04-09 10:03:42
-LastEditTime: 2022-05-11 23:24:15
+LastEditTime: 2022-05-21 19:30:51
 LastEditors: Please set LastEditors
 Description: In User Settings Edit
 FilePath: \video\rd505_cmd.py
@@ -403,19 +403,32 @@ class RD505CMD():
         hex_data = self.data
         decode_dict = {}
 
-        if (not self.check_cmd_cc(hex_data, 0x49, CMD_CC_CMD_FORMAT_RESPONSE)):
-            return False
+        check_false = False
+
+        check_false |= self.check_cmd_cc(hex_data, 0x49, CMD_CC_CMD_FORMAT_RESPONSE)
         ex_flag = (hex_data[DATA_CC]&BIT1) >> 1
 
-        if ((ex_flag) and (hex_data[DATA_CMD+3] != 0x49)):
-            logging.debug('cmd + 3 data is not cmd49 res')
+        check_false |= not ((ex_flag) and (hex_data[DATA_CMD+3] != 0x49))
+        # if ((ex_flag) and (hex_data[DATA_CMD+3] != 0x49)):
+        #     logging.debug('cmd + 3 data is not cmd49 res')
+        #     return False
+
+        if ( not check_false ):
             return False
 
         logging.debug('decode cmd 49 main response')
         decode_dict.update(self.cmd_decode_addr(hex_data))
-        decode_dict[ERROR_SYSTEM_NUM] = ((hex_data[DATA_AU0]<<2) + ((hex_data[DATA_AU1]&0xc0)>>6)) - 0x20
-        decode_dict[ERROR_INDOOR_NUM] = hex_data[DATA_AU1]&0x3F
-        decode_dict[ERROR_CODE] = hex_data[DATA_AN] 
+        if ( not ex_flag ):
+            decode_dict[ERROR_SYSTEM_NUM] = ((hex_data[DATA_AU0]<<2) + ((hex_data[DATA_AU1]&0xc0)>>6)) - 0x20
+            decode_dict[ERROR_INDOOR_NUM] = hex_data[DATA_AU1]&0x3F
+            decode_dict[ERROR_CODE] = hex_data[DATA_AN] 
+
+        else:
+            decode_dict[ERROR_SYSTEM_NUM] = ((hex_data[DATA_AU0+3]<<2) + ((hex_data[DATA_AU1+3]&0xc0)>>6)) - 0x20
+            decode_dict[ERROR_INDOOR_NUM] = hex_data[DATA_AU1+3]&0x3F
+            decode_dict[ERROR_CODE] = hex_data[DATA_AN+3] 
+
+    
         decode_dict[MYPRINT_FUNCTION] = self.myprint_function(0x49, CMD_CC_CMD_FORMAT_RESPONSE)
         self.data_decode_dict = decode_dict
         return True
